@@ -103,7 +103,7 @@ exports.login = async (req, res) => {
     }
 
     //check if user is not verified
-    if (user.isVerified === false) {
+    if (user.isVerified == false) {
       console.log("inside verified false");
       return res.status(401).json({
         status: "fail",
