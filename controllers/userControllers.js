@@ -101,10 +101,9 @@ exports.login = async (req, res) => {
         message: "Please provide correct password",
       });
     }
-
+    const isVerified = user.isVerfied;
     //check if user is not verified
-    if (user.isVerified == false) {
-      console.log("inside verified false");
+    if (isVerified == false) {
       return res.status(401).json({
         status: "fail",
         message: "Please check your email for verification link",
