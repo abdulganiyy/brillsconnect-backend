@@ -90,41 +90,42 @@ exports.login = async (req, res) => {
         status: "fail",
         message: "Please provide correct email",
       });
-    }
-
-    //check if password is not correct
-    const isCorrectPassword = await bcrypt.compare(password, user.password);
-
-    if (!isCorrectPassword) {
-      return res.status(400).json({
-        status: "fail",
-        message: "Please provide correct password",
-      });
-    }
-    const isVerified = user.isVerfied;
-    //check if user is not verified
-    if (isVerified === false) {
-      return res.status(401).json({
-        status: "fail",
-        message: "Please check your email for verification link",
-      });
     } else {
-      //sign token
-      const token = jwt.sign(
-        {
-          id: user._id,
-          email: user.email,
-          username: user.username,
-        },
-        process.env.SECRET_KEY,
-        { expiresIn: "1hr" }
-      );
+      //check if password is not correct
+      const isCorrectPassword = await bcrypt.compare(password, user.password);
 
-      return res.status(200).json({
-        status: "success",
-        token,
-        user,
-      });
+      if (!isCorrectPassword) {
+        return res.status(400).json({
+          status: "fail",
+          message: "Please provide correct password",
+        });
+      }
+
+      //check if user is not verified
+      if (user.isVerified) {
+        console.log(user.isVerified);
+        //sign token
+        const token = jwt.sign(
+          {
+            id: user._id,
+            email: user.email,
+            username: user.username,
+          },
+          process.env.SECRET_KEY,
+          { expiresIn: "1hr" }
+        );
+
+        return res.status(200).json({
+          status: "success",
+          token,
+          user,
+        });
+      } else {
+        return res.status(401).json({
+          status: "fail",
+          message: "Please check your email for verification link",
+        });
+      }
     }
   } catch (err) {
     return res.status(500).json({
