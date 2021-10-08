@@ -108,7 +108,7 @@ exports.login = async (req, res) => {
         status: "fail",
         message: "Please check your email for verification link",
       });
-    } else if (user.isVerified === true) {
+    } else {
       //sign token
       const token = jwt.sign(
         {
