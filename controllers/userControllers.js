@@ -8,6 +8,7 @@ const checkAuth = require("../utils/checkAuth");
 exports.signup = async (req, res) => {
   const { email, password } = req.body;
 
+  //check if user already exists
   const user = await User.findOne({
     email,
   });
@@ -20,11 +21,14 @@ exports.signup = async (req, res) => {
     });
   }
 
+  //create verification code
   const emailCode = crypto.randomBytes(64).toString("hex");
   const isVerified = false;
 
+  //hash password
   const hash = await bcrypt.hash(password, 8);
 
+  //create new user
   const newUser = new User({
     emailCode,
     isVerified,
@@ -34,6 +38,7 @@ exports.signup = async (req, res) => {
 
   await newUser.save();
 
+  //send email
   sendMail(req, res, email, emailCode);
 };
 
@@ -50,11 +55,14 @@ exports.verify = async (req, res) => {
       isVerified: true,
     });
 
+    // return response on successful verification
     return res.status(200).json({
       status: "success",
       message: "Verification successfully completed",
     });
   } else {
+    // return response on failed verification
+
     return res.status(404).json({
       status: "fail",
       message: "User not found",
@@ -84,6 +92,7 @@ exports.login = async (req, res) => {
       });
     }
 
+    //check if password is not correct
     const isCorrectPassword = await bcrypt.compare(password, user.password);
 
     if (!isCorrectPassword) {
@@ -93,13 +102,15 @@ exports.login = async (req, res) => {
       });
     }
 
-    // if (user.isVerified !== true) {
-    //   return res.status(400).json({
-    //     status: "fail",
-    //     message: "Please check your email for verification link",
-    //   });
-    // }
+    //check if user is not verified
+    if (user.isVerified !== true) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Please check your email for verification link",
+      });
+    }
 
+    //sign token
     const token = jwt.sign(
       {
         id: user._id,

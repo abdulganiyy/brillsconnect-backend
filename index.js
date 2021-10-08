@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+//import user routes
 app.use("/users", require("./routes/userRoutes"));
 
 const mongoURI = process.env.MONGOURI;
