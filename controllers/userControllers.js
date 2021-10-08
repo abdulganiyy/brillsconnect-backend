@@ -103,7 +103,7 @@ exports.login = async (req, res) => {
     }
 
     //check if user is not verified
-    if (user.isVerified !== true) {
+    if (user.isVerified === false) {
       return res.status(400).json({
         status: "fail",
         message: "Please check your email for verification link",
