@@ -39,7 +39,7 @@ module.exports = async function sendMail(req, res, email, emailCode) {
       to: email,
       subject: "Email Confirmation",
       text: "Your Confirmation Email",
-      html: `Please click on this link <a href="http://${req.headers.host}/verify-email/${emailCode}">here</a> to verify your account`,
+      html: `Please click on this link <a href="https://${req.headers.host}/verify-email/${emailCode}">here</a> to verify your account`,
     };
 
     const result = await transport.sendMail(mailOptions);
