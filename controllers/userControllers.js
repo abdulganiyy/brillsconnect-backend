@@ -108,24 +108,24 @@ exports.login = async (req, res) => {
         status: "fail",
         message: "Please check your email for verification link",
       });
+    } else if (user.isVerified === true) {
+      //sign token
+      const token = jwt.sign(
+        {
+          id: user._id,
+          email: user.email,
+          username: user.username,
+        },
+        process.env.SECRET_KEY,
+        { expiresIn: "1hr" }
+      );
+
+      return res.status(200).json({
+        status: "success",
+        token,
+        user,
+      });
     }
-
-    //sign token
-    const token = jwt.sign(
-      {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-      },
-      process.env.SECRET_KEY,
-      { expiresIn: "1hr" }
-    );
-
-    return res.status(200).json({
-      status: "success",
-      token,
-      user,
-    });
   } catch (err) {
     return res.status(500).json({
       status: "fail",
