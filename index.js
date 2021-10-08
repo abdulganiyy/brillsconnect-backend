@@ -10,6 +10,8 @@ app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+app.get("/", (_, res) => res.send("Welcome to brillsconnect"));
+
 //import user routes
 app.use("/users", require("./routes/userRoutes"));
 
